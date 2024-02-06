@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{{title}}}</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+{{{style}}}
+{{{mermaid}}}
+
+<script>
+  window.onload = function () {
+      var pElements = document.querySelectorAll("p");
+      pElements.forEach(function (element) {
+          var html = element.innerHTML;
+          var updatedHtml = html.replace(
+              /(\$\$?)([\s\S]+?)\1/g,
+              function (match, delimiter, code) {
+                  var newCode = code
+                      .replace(/&amp;/g, "&")
+                      .replace(/<br>/g, "")
+                      .replace(/<em>/g, "_")
+                      .replace(/<\/em>/g, "_")
+                      .replace(/\\(?![a-zA-Z])/g, "\\\\"); // Convert \ at the end of a sentence to \, but exclude \frac etc.
+                  return delimiter + newCode + delimiter;
+              }
+          );
+          element.innerHTML = updatedHtml;
+      });
+      window.MathJax = {
+          tex: {
+              inlineMath: [["$", "$"]],
+          },
+          svg: {
+              fontCache: "global",
+          },
+      };
+
+      (function () {
+          var script = document.createElement("script");
+          script.src =
+              "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js";
+          script.async = true;
+          document.head.appendChild(script);
+      })();
+  };
+</script>
+
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+{{{content}}}
+</body>
+</html>
