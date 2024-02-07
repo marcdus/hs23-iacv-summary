@@ -503,7 +503,7 @@ Individually, each of these is a *weak classifier* (high bias, low variance). Ho
 
 ### Boosting for feature selection
 Using multple weak classifiers, we can iteratively improve the overall result. The procedure is as follows:
-1. Compute all classifiers and compute the optimal threshold value for each of them
+1. Compute all classifiers and compute the optimal threshold value for each of them.  
   Example: Compute the sum of a two-rectangle feature for all training inputs. Once done, compute a treshold that groups all results into two separate categories. Find the optimal treshold.
 2. Among them, find the classifier with corresponding treshold that achieves the lowest **weighted** training error (all samples have equal weight at the beginning).
 3. For the next iteration, increase the weight of all samples that have been **wrongly classified** and repeat from step 1.
@@ -536,6 +536,8 @@ we can iterate:
   $$
   H(\mathbf x) = sign\left( \sum_{m=1}^M \alpha_m h_m(\mathbf x) \right)
   $$
+
+  where $\alpha$ is a weight based on the accuracy of that classifier during training (low error &rarr; high accuracy and weight).
 
 **Detailed Algorithm TODO**  
 
@@ -617,7 +619,9 @@ The idea of these is to repurpose an existing classification network (low dimens
 - Improve the resolution of the mask using learned upsampling with **transposed convolutions**. As the information of deeper layers has reduced dimensions, these need to be upsampled to a higher resolution.
 
 #### Transposed convolutions
-These can be used for upsampling and are sometimes called *deconvolution* (though that wording is not exactly correct in our application). A transposed convolution is pretty much the reverse of the normal convolution; instead of a for ex. a 3x3 kernel saving the addition of a 3x3 area into a single pixel, a single pixel vlue is multiplied with a 3x3 kernel and saved in pixels of area 3x3.
+These can be used for upsampling and are sometimes called *deconvolution* (though that wording is not exactly correct in our application). A transposed convolution is pretty much the reverse of the normal convolution; instead of a for ex. a 3x3 kernel saving the addition of a 3x3 area into a single pixel, a single pixel value is multiplied with a 3x3 kernel and saved in pixels of area 3x3.
+
+The inversion of a convolution kernel is the horizontically and vertically flipped original kernel.
 
 As with the normal convolution, the kernel size and stride are adjustable. For ex. with a kernel of size 4 and stride 2, the output is upsampled with 2x. For kernel size 16 and stride 8, the upsampling is 8x. **TODO: how do we get 2x and 8x?**
 
@@ -664,7 +668,7 @@ How this look at a high level:
 Just like with convolutions with stride, or with pooling, dilated layers (stride + dilation) have an increasing receptive area with increasing layer depth.
 
 ![Alt text](assets_summary_8_14/image-58.png)
-*Red: receptive fields of dilation,Blue-green: receptive area of convolution with stride 2*
+*Red: receptive fields of dilation, Blue-green: receptive area of convolution with stride 2*
 
 With dilated layers, we choose the same stride as dilation, i.e. for stride 2 the gaps between the dilated pixels will be 1 because the gap between the kernel centers is also 1.
 
